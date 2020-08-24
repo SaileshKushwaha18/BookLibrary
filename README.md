@@ -22,5 +22,5 @@ Book Library use case - Spring Boot Microservices
   mvn clean install
   
 ##Testing
-Import BookLibraryAPIMicroService.postman_collection.json in Postman to test the service and end to end flow using Postman Rest Client.
+1. Import BookLibraryAPIMicroService.postman_collection.json in Postman to test the service and end to end flow using Postman Rest Client.
 
