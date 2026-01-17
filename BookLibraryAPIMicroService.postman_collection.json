@@ -1,131 +1,823 @@
 {
 	"info": {
 		"_postman_id": "4e8ceb0b-637c-4c0b-847b-99c34da72df1",
-		"name": "BookLibraryAPIMicroService",
+		"name": "BookLibrary Microservices API v1.0",
+		"description": "Production-grade REST API collection for BookLibrary microservices.\n\nVersion: Spring Boot 3.4.0, JDK 17, Spring Cloud 2023.0.3\n\nServices:\n- API Gateway: http://localhost:8080 (Spring Cloud Gateway)\n- Book Service: http://localhost:8081 (REST API)\n- Subscription Service: http://localhost:8082 (REST API)\n- Eureka Server: http://localhost:8761 (Service Registry)\n\nHeaders: All requests use application/json content-type\nAuthentication: Service-to-service via service discovery\nMonitoring: Actuator endpoints available on each service",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "API Gateway base URL"
+		},
+		{
+			"key": "bookServiceDirect",
+			"value": "http://localhost:8081",
+			"type": "string",
+			"description": "Direct Book Service URL (bypassing gateway)"
+		},
+		{
+			"key": "subscriptionServiceDirect",
+			"value": "http://localhost:8082",
+			"type": "string",
+			"description": "Direct Subscription Service URL (bypassing gateway)"
+		},
+		{
+			"key": "eurekaServer",
+			"value": "http://localhost:8761",
+			"type": "string",
+			"description": "Eureka Service Discovery Server"
+		}
+	],
 	"item": [
 		{
-			"name": "BookServiceGET",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
+			"name": "0. Service Health & Discovery",
+			"description": "Health checks and service discovery endpoints",
+			"item": [
+				{
+					"name": "Eureka Dashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{eurekaServer}}/",
+							"host": ["{{eurekaServer}}"],
+							"variable": []
+						},
+						"description": "View Eureka service registry dashboard"
+					},
+					"response": []
+				},
+				{
+					"name": "Book Service Health",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/actuator/health",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Check Book Service health status"
+					},
+					"response": []
+				},
+				{
+					"name": "Subscription Service Health",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/actuator/health",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Check Subscription Service health status"
+					},
+					"response": []
+				},
+				{
+					"name": "API Gateway Health",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/health",
+							"host": ["{{baseUrl}}"],
+							"path": ["actuator", "health"]
+						},
+						"description": "Check API Gateway health status"
+					},
+					"response": []
+				},
+				{
+					"name": "Book Service Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/actuator/prometheus",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["actuator", "prometheus"]
+						},
+						"description": "Prometheus metrics for Book Service"
+					},
+					"response": []
+				},
+				{
+					"name": "Subscription Service Circuit Breaker Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/actuator/circuitbreakers",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["actuator", "circuitbreakers"]
+						},
+						"description": "Check Resilience4j circuit breaker status"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "SubscriptionServiceGET",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
+			"name": "1. Book Service API",
+			"description": "Book Service REST endpoints (Port 8081) - Manages book catalog and availability",
+			"item": [
+				{
+					"name": "Get All Books (Direct Service)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/books",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["books"]
+						},
+						"description": "Retrieve all books from catalog\n\nREST: GET /books\nStatus: 200 OK\nResponse: List of Book objects"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book by ID (Direct Service)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/books/B1212",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["books", "B1212"]
+						},
+						"description": "Retrieve a specific book by ID\n\nREST: GET /books/{bookId}\nPath Param: bookId = B1212\nStatus: 200 OK | 404 NOT FOUND\nResponse: Book object"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book Copies (Direct Service)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bookId\": \"B1212\",\n    \"remainingCopies\": 5\n}"
+						},
+						"url": {
+							"raw": "{{bookServiceDirect}}/books/B1212",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["books", "B1212"]
+						},
+						"description": "Update available copies for a book\n\nREST: PUT /books/{bookId}\nPath Param: bookId = B1212\nBody: JSON with bookId and remainingCopies\nStatus: 200 OK | 404 NOT FOUND\nResponse: Updated Book object"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book API Documentation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bookServiceDirect}}/swagger-ui.html",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["swagger-ui.html"]
+						},
+						"description": "OpenAPI 3.0 Swagger UI documentation for Book Service"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book OpenAPI Spec",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/v3/api-docs",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["v3", "api-docs"]
+						},
+						"description": "OpenAPI 3.0 JSON specification for Book Service"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "SubscriptionServicePOST",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"subscriberName\": \"Sailesh\",\r\n        \"dateSubscriber\": \"26-APR-2020\",\r\n        \"dateReturned\": null,\r\n        \"bookId\": \"B4232\"\r\n}"
+			"name": "2. Subscription Service API",
+			"description": "Subscription Service REST endpoints (Port 8082) - Manages book subscriptions with Resilience4j circuit breaker",
+			"item": [
+				{
+					"name": "Get All Subscriptions (Direct Service)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/subscriptions",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["subscriptions"]
+						},
+						"description": "Retrieve all subscriptions\n\nREST: GET /subscriptions\nStatus: 200 OK\nResponse: List of Subscription objects\nNote: Calls Book Service via circuit breaker"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "localhost:8082/subscriptions",
-					"host": [
-						"localhost"
-					],
-					"port": "8082",
-					"path": [
-						"subscriptions"
-					]
+				{
+					"name": "Get Subscription by ID (Direct Service)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/subscriptions/1",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["subscriptions", "1"]
+						},
+						"description": "Retrieve a specific subscription by ID\n\nREST: GET /subscriptions/{id}\nPath Param: id = 1\nStatus: 200 OK | 404 NOT FOUND\nResponse: Subscription object"
+					},
+					"response": []
 				},
-				"description": "POST SUBSCRIPTIONS"
-			},
-			"response": []
-		},
-		{
-			"name": "APIGATEWAY-SUBSCRIPTION-SERVICE-ZUUL",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/subscription-service/subscriptions",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"subscription-service",
-						"subscriptions"
-					]
+				{
+					"name": "Create Subscription (Direct Service)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subscriberName\": \"John Doe\",\n    \"dateSubscriber\": \"2024-01-17\",\n    \"dateReturned\": null,\n    \"bookId\": \"B1212\"\n}"
+						},
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/subscriptions",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["subscriptions"]
+						},
+						"description": "Create a new book subscription\n\nREST: POST /subscriptions\nBody: JSON with subscriber details\nStatus: 201 CREATED | 400 BAD REQUEST\nResponse: Created Subscription object with auto-generated ID\nNote: Auto-increment ID using GenerationType.IDENTITY"
+					},
+					"response": []
 				},
-				"description": "API GATEWAY - SUBSCRIPTION-SERVICE"
-			},
-			"response": []
-		},
-		{
-			"name": "APIGATEWAY-BOOK-SERVICE-ZUUL",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/book-service/books",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"book-service",
-						"books"
-					]
+				{
+					"name": "Get Subscription API Documentation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/swagger-ui.html",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["swagger-ui.html"]
+						},
+						"description": "OpenAPI 3.0 Swagger UI documentation for Subscription Service"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subscription OpenAPI Spec",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/v3/api-docs",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["v3", "api-docs"]
+						},
+						"description": "OpenAPI 3.0 JSON specification for Subscription Service"
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "APIGATEWAY-SUBSCRIPTION-SERVICE-ZUUL-POST",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"subscriberName\": \"Sailesh\",\r\n        \"dateSubscriber\": \"26-APR-2020\",\r\n        \"dateReturned\": null,\r\n        \"bookId\": \"B4232\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
+			"name": "3. API Gateway Routes",
+			"description": "API Gateway endpoints (Port 8080) - Spring Cloud Gateway routing to backend services",
+			"item": [
+				{
+					"name": "Get All Books (Via Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/book-service/books",
+							"host": ["{{baseUrl}}"],
+							"path": ["book-service", "books"]
+						},
+						"description": "Get all books through API Gateway\n\nGateway Route: /book-service/** → lb://book-service\nFinal URL: http://book-service/books (via service discovery)\nStatus: 200 OK"
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:8080/subscription-service/subscriptions",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"subscription-service",
-						"subscriptions"
-					]
+				{
+					"name": "Get Book by ID (Via Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/book-service/books/B1212",
+							"host": ["{{baseUrl}}"],
+							"path": ["book-service", "books", "B1212"]
+						},
+						"description": "Get a specific book through API Gateway\n\nGateway Route: /book-service/** → lb://book-service\nPath Param: bookId = B1212\nStatus: 200 OK"
+					},
+					"response": []
 				},
-				"description": "API GATEWAY- SUBSCRIPTION POST"
-			},
-			"response": []
+				{
+					"name": "Get All Subscriptions (Via Gateway)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/subscription-service/subscriptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["subscription-service", "subscriptions"]
+						},
+						"description": "Get all subscriptions through API Gateway\n\nGateway Route: /subscription-service/** → lb://subscription-service\nStatus: 200 OK\nNote: May trigger circuit breaker if Book Service is down"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subscription (Via Gateway)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subscriberName\": \"Jane Smith\",\n    \"dateSubscriber\": \"2024-01-17\",\n    \"dateReturned\": null,\n    \"bookId\": \"B4232\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/subscription-service/subscriptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["subscription-service", "subscriptions"]
+						},
+						"description": "Create subscription through API Gateway\n\nGateway Route: /subscription-service/** → lb://subscription-service\nBody: JSON with subscription details\nStatus: 201 CREATED | 400 BAD REQUEST"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book Copies (Via Gateway)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"bookId\": \"B1212\",\n    \"remainingCopies\": 8\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/book-service/books/B1212",
+							"host": ["{{baseUrl}}"],
+							"path": ["book-service", "books", "B1212"]
+						},
+						"description": "Update book copies through API Gateway\n\nGateway Route: /book-service/** → lb://book-service\nStatus: 200 OK"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Error Scenarios & Circuit Breaker",
+			"description": "Test error handling and Resilience4j circuit breaker behavior",
+			"item": [
+				{
+					"name": "Get Invalid Book ID (404 Error)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/books/INVALID123",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["books", "INVALID123"]
+						},
+						"description": "Test 404 error response\n\nREST: GET /books/{bookId} with invalid ID\nStatus: 404 NOT FOUND\nResponse: Error details with message"
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Subscription JSON (400 Error)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subscriberName\": \"Test\"\n}"
+						},
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/subscriptions",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["subscriptions"]
+						},
+						"description": "Test 400 error with incomplete data\n\nREST: POST /subscriptions with missing required fields\nStatus: 400 BAD REQUEST\nResponse: Validation error details"
+					},
+					"response": []
+				},
+				{
+					"name": "Circuit Breaker Fallback Test",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/subscriptions",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["subscriptions"]
+						},
+						"description": "Test circuit breaker fallback\n\nSteps:\n1. Stop Book Service (port 8081)\n2. Make request to this endpoint\n3. Circuit breaker opens after 5 failures\n4. Returns fallback response (0 copies available)\n5. Wait 15 seconds for recovery\n6. Restart Book Service\n7. Circuit breaker half-open and recovery begins\n\nResiIence4j Config:\n- Sliding window: 10 calls\n- Failure threshold: 50%\n- Recovery timeout: 15 seconds"
+					},
+					"response": []
+				},
+				{
+					"name": "Circuit Breaker Events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/actuator/circuitbreaker-events",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["actuator", "circuitbreaker-events"]
+						},
+						"description": "View circuit breaker event history\n\nREST: GET /actuator/circuitbreaker-events\nResponse: List of circuit breaker state transitions and errors"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. End-to-End Integration Tests",
+			"description": "Complete workflow tests spanning multiple services",
+			"item": [
+				{
+					"name": "Workflow: Create Subscription & Check Book Availability",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"subscriberName\": \"Test User\",\n    \"dateSubscriber\": \"2024-01-17\",\n    \"dateReturned\": null,\n    \"bookId\": \"B1212\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/subscription-service/subscriptions",
+							"host": ["{{baseUrl}}"],
+							"path": ["subscription-service", "subscriptions"]
+						},
+						"description": "Complete E2E workflow:\n\n1. Create new subscription (via gateway)\n2. System checks Book Service for availability (Resilience4j protected)\n3. Book Service returns available copies\n4. Subscription created successfully\n5. Circuit breaker monitors the communication\n\nTest this multiple times to observe:\n- Successful calls (circuit breaker CLOSED)\n- Service health (check /actuator/health)\n- Response compression (gzip enabled)\n- Timing (may vary with gateway routing)"
+					},
+					"response": []
+				},
+				{
+					"name": "Workflow: List All Books Then Create Subscription",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/book-service/books",
+							"host": ["{{baseUrl}}"],
+							"path": ["book-service", "books"]
+						},
+						"description": "Step 1: List all available books via gateway\n\nThen use a bookId from the response to:\nStep 2: Create a subscription (see next request)\n\nThis tests:\n- Gateway routing to Book Service\n- API Gateway request header injection (X-Gateway-Route)\n- Load balancing via service discovery\n- HTTP compression of response"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Monitoring & Performance",
+			"description": "Monitoring endpoints and performance metrics",
+			"item": [
+				{
+					"name": "Book Service Application Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/actuator/info",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["actuator", "info"]
+						},
+						"description": "Get application information (name, version)"
+					},
+					"response": []
+				},
+				{
+					"name": "Book Service Available Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/actuator/metrics",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["actuator", "metrics"]
+						},
+						"description": "List all available metrics\n\nIncludes:\n- JVM metrics (memory, garbage collection)\n- HTTP metrics (requests, responses)\n- Database connection pool\n- Custom application metrics"
+					},
+					"response": []
+				},
+				{
+					"name": "HTTP Requests Metric",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/actuator/metrics/http.server.requests",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["actuator", "metrics", "http.server.requests"]
+						},
+						"description": "HTTP request metrics\n\nShows:\n- Request count\n- Response times (p50, p95, p99, max)\n- Status codes (2xx, 4xx, 5xx)\n- By endpoint and method"
+					},
+					"response": []
+				},
+				{
+					"name": "JVM Memory Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/actuator/metrics/jvm.memory.used",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["actuator", "metrics", "jvm.memory.used"]
+						},
+						"description": "JVM memory usage metrics\n\nShows memory used by:\n- Heap\n- Non-heap\n- Various memory pools"
+					},
+					"response": []
+				},
+				{
+					"name": "API Gateway Metrics",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/actuator/prometheus",
+							"host": ["{{baseUrl}}"],
+							"path": ["actuator", "prometheus"]
+						},
+						"description": "Prometheus metrics for API Gateway\n\nIncludes all gateway performance metrics in Prometheus format"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "7. API Documentation & Specifications",
+			"description": "OpenAPI 3.0 documentation endpoints",
+			"item": [
+				{
+					"name": "Book Service Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{bookServiceDirect}}/swagger-ui.html",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["swagger-ui.html"]
+						},
+						"description": "Interactive OpenAPI 3.0 Swagger UI for Book Service\n\nAccess in browser to:\n- View all endpoints\n- Test API calls\n- See request/response schemas\n- Check status codes\n\nGenerated automatically by Springdoc OpenAPI"
+					},
+					"response": []
+				},
+				{
+					"name": "Book Service OpenAPI JSON",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{bookServiceDirect}}/v3/api-docs",
+							"host": ["{{bookServiceDirect}}"],
+							"path": ["v3", "api-docs"]
+						},
+						"description": "OpenAPI 3.0 JSON specification for Book Service\n\nUse for:\n- Code generation\n- API documentation generation\n- Testing tools integration"
+					},
+					"response": []
+				},
+				{
+					"name": "Subscription Service Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/swagger-ui.html",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["swagger-ui.html"]
+						},
+						"description": "Interactive OpenAPI 3.0 Swagger UI for Subscription Service"
+					},
+					"response": []
+				},
+				{
+					"name": "Subscription Service OpenAPI JSON",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{subscriptionServiceDirect}}/v3/api-docs",
+							"host": ["{{subscriptionServiceDirect}}"],
+							"path": ["v3", "api-docs"]
+						},
+						"description": "OpenAPI 3.0 JSON specification for Subscription Service"
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"protocolProfileBehavior": {}

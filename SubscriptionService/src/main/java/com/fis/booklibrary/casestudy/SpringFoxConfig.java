@@ -1,38 +1,31 @@
 package com.fis.booklibrary.casestudy;
 
-import java.util.Collections;
-
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.License;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
+/**
+ * OpenAPI (Swagger 3) configuration for SubscriptionService
+ */
 @Configuration
-@EnableSwagger2
-public class SpringFoxConfig {                                    
-    @Bean
-    public Docket api() { 
-        return new Docket(DocumentationType.SWAGGER_2)  
-          .select()                                  
-          .apis(RequestHandlerSelectors.basePackage("com.fis.booklibrary.casestudy"))              
-          .paths(PathSelectors.any())                          
-          .build()
-          .apiInfo(apiInfo());
-    }
-    
-    private ApiInfo apiInfo() {
-        return new ApiInfo(
-          "SubscriptionService REST API", 
-          "This service provides information about the book subscription", 
-          "API TOS", 
-          "Terms of service", 
-          new Contact("Sailesh Kushwaha", "www.booklibrary.com", "sailesh.kushwaha@fisglobal.com"), 
-          "License of API", "API license URL", Collections.emptyList());
-    } 
+public class SpringFoxConfig {
+
+	@Bean
+	public OpenAPI subscriptionServiceOpenAPI() {
+		return new OpenAPI()
+				.info(new Info()
+						.title("SubscriptionService REST API")
+						.description("This service provides information about the book subscription")
+						.version("1.0.0")
+						.contact(new Contact()
+								.name("Sailesh Kushwaha")
+								.url("https://www.booklibrary.com")
+								.email("sailesh.kushwaha@fisglobal.com"))
+						.license(new License()
+								.name("Apache 2.0")
+								.url("https://www.apache.org/licenses/LICENSE-2.0.html")));
+	}
 }

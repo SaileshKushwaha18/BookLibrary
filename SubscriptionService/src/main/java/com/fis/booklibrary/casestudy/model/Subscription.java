@@ -1,10 +1,10 @@
 package com.fis.booklibrary.casestudy.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +21,7 @@ import lombok.Setter;
 public class Subscription {
 	
 	@Id
-	@GeneratedValue( strategy = GenerationType.AUTO )
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="SUBSCRIPTION_ID")
 	private Long id;
 	
@@ -36,5 +36,4 @@ public class Subscription {
 
 	@Column(name="BOOK_ID")
 	private String bookId;
-	
 }

@@ -1,7 +1,22 @@
 server:
-  port: 8081    #default port where the service will be started
+  port: 8081
+  compression:
+    enabled: true
+    min-response-size: 1024
  
-eureka:         #tells about the Eureka server details and its refresh time
+spring:     
+  application:
+    name: book-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+ 
+eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1
     leaseExpirationDurationInSeconds: 2
@@ -12,15 +27,16 @@ eureka:         #tells about the Eureka server details and its refresh time
       enabled: true
     lease:
       duration: 5
- 
-spring:     
-  application:
-    name: book-service   #current service name to be used by the eureka server
-     
+
 management:
-  security:
-    enabled: false  #disable the spring security on the management endpoints like /env, /refresh etc. 
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
 
 logging:
   level:
-    com.fis.booklibrary.casestudy: DEBUG
+    com.fis.booklibrary.casestudy: INFO
