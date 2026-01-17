@@ -1,0 +1,50 @@
+server:
+  port: 8080
+  
+spring:
+  application:
+    name: api-gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: book-service
+          uri: lb://book-service
+          predicates:
+            - Path=/book-service/**
+          filters:
+            - StripPrefix=1
+            - AddRequestHeader=X-Gateway-Route,book-service
+        
+        - id: subscription-service
+          uri: lb://subscription-service
+          predicates:
+            - Path=/subscription-service/**
+          filters:
+            - StripPrefix=1
+            - AddRequestHeader=X-Gateway-Route,subscription-service
+
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+    lease:
+      duration: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.fis.booklibrary.casestudy: INFO
+    org.springframework.cloud.gateway: DEBUG

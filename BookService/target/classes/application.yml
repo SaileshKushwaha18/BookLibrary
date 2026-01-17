@@ -1,0 +1,42 @@
+server:
+  port: 8081
+  compression:
+    enabled: true
+    min-response-size: 1024
+ 
+spring:     
+  application:
+    name: book-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  datasource:
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+ 
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+    lease:
+      duration: 5
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    com.fis.booklibrary.casestudy: INFO
