@@ -3,6 +3,7 @@ package com.fis.booklibrary.casestudy.service;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,6 +36,15 @@ public class SubscriptionService {
 
 	public List<Subscription> getSubscriptions() {
 		return subscriptionRepository.findAll();
+	}
+	
+	/**
+	 * Retrieve subscription by ID
+	 * @param id subscription identifier
+	 * @return Optional containing subscription if found
+	 */
+	public Optional<Subscription> getSubscriptionById(Long id) {
+		return subscriptionRepository.findById(id);
 	}
 
 	@Transactional

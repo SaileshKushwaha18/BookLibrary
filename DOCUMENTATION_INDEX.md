@@ -70,6 +70,40 @@ This project contains comprehensive documentation for the upgraded BookLibrary m
    - File structure overview
    - Changes by category
 
+### 🧪 **QA / Testing**
+**Time to read**: 15 minutes
+
+1. **[POSTMAN_COLLECTION_GUIDE.md](./POSTMAN_COLLECTION_GUIDE.md)** - Complete testing guide
+   - How to import and configure Postman collection
+   - REST standards compliance details
+   - Microservices patterns tested
+   - Error scenarios to test
+   - Circuit breaker testing
+   - Integration test workflows
+   - Performance monitoring endpoints
+
+2. **[QUICK_REFERENCE_CARD.md](./QUICK_REFERENCE_CARD.md)** - Quick reference during testing
+   - Service URLs and ports
+   - Common API requests
+   - Monitoring endpoints
+   - Troubleshooting guide
+
+### ⚡ **Quick References (Everyone)**
+**Time to read**: 2-5 minutes
+
+1. **[QUICK_REFERENCE_CARD.md](./QUICK_REFERENCE_CARD.md)** - One-page quick reference
+   - Service URLs
+   - Quick start (5 minutes)
+   - Common API endpoints
+   - Testing guide
+   - Troubleshooting
+
+2. **[POSTMAN_COLLECTION_UPDATE_SUMMARY.md](./POSTMAN_COLLECTION_UPDATE_SUMMARY.md)** - What changed in Postman collection
+   - Before/after comparison
+   - Collection structure (40+ requests)
+   - REST standards implemented
+   - Getting started guide
+
 ---
 
 ## 📖 Complete Document List
@@ -84,6 +118,9 @@ This project contains comprehensive documentation for the upgraded BookLibrary m
 | [PROJECT_ANALYSIS_AND_VERIFICATION.md](./PROJECT_ANALYSIS_AND_VERIFICATION.md) | Complete technical analysis | Architects | 45 min |
 | [PRODUCTION_READINESS_CHECKLIST.md](./PRODUCTION_READINESS_CHECKLIST.md) | Verification checklist | DevOps | 15 min |
 | [FILE_REFERENCE_GUIDE.md](./FILE_REFERENCE_GUIDE.md) | Complete file mapping | Code reviewers | 20 min |
+| [POSTMAN_COLLECTION_GUIDE.md](./POSTMAN_COLLECTION_GUIDE.md) | **NEW** - Postman collection & API testing | QA/Developers | 15 min |
+| [POSTMAN_COLLECTION_UPDATE_SUMMARY.md](./POSTMAN_COLLECTION_UPDATE_SUMMARY.md) | **NEW** - Collection update overview | QA/Testers | 5 min |
+| [QUICK_REFERENCE_CARD.md](./QUICK_REFERENCE_CARD.md) | **NEW** - Quick start and common tasks | All | 2 min |
 
 ---
 
@@ -97,7 +134,10 @@ BookLibrary/
 ├── 📚 UPGRADE_GUIDE.md
 ├── 🔬 PROJECT_ANALYSIS_AND_VERIFICATION.md
 ├── ✅ PRODUCTION_READINESS_CHECKLIST.md
-└── 📋 FILE_REFERENCE_GUIDE.md
+├── 📋 FILE_REFERENCE_GUIDE.md
+├── 🧪 POSTMAN_COLLECTION_GUIDE.md
+├── 📌 POSTMAN_COLLECTION_UPDATE_SUMMARY.md
+└── ⚡ QUICK_REFERENCE_CARD.md
 ```
 
 ---
